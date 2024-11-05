@@ -1,0 +1,16 @@
+{
+    "name": "jhonatan/auto-sys",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "App\\Routes\\": "routes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "J-Pantaroto",
+            "email": "jhonatanpantaroto@gmail.com"
+        }
+    ],
+    "require": {}
+}

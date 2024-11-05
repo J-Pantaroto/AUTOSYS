@@ -1,0 +1,11 @@
+RewriteEngine On
+
+
+# Redireciona qualquer rota que não seja um arquivo ou diretório para o index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+# Redireciona qualquer rota inexistente que termine em .php para a página 404
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule \.php$ /404.php [L]
