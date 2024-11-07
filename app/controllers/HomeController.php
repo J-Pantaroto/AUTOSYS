@@ -1,8 +1,12 @@
-<?php 
-namespace App\Controllers;
+<?php
 
-class HomeController {
-    public function index() {
+namespace App\Controllers;
+use App\Controllers\ClienteController;
+class HomeController
+{
+    public function index()
+    {
         require __DIR__ . '/../../views/home.php';
+
     }
 }

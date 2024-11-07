@@ -1,5 +1,7 @@
 <?php
-
+namespace App\Config;
+use Exception;
+use mysqli;
 function loadEnv($path)
 {
     if (!file_exists($path)) {
@@ -16,7 +18,7 @@ function loadEnv($path)
 }
 
 loadEnv(__DIR__ . '/../../.env');
-
+print_r($_ENV);
 class Database
 {
     private $host;
@@ -34,15 +36,25 @@ class Database
         $this->password = $_ENV['DB_PASSWORD'];
         $this->charset = $_ENV['DB_CHARSET'];
     }
+ 
+/* public function __construct()
+{
+    $this->host = "localhost";
+    $this->db_name ="autopecas_db";
+    $this->username ="root";
+    $this->password = "";
+    $this->charset = "utf8";
+} */
+public function getConnection()
+{
+    $this->conn = new mysqli($this->host, $this->username, $this->password, $this->db_name);
 
-    public function getConnection()
-    {
-        $this->conn = null;
-        $this->conn = new mysqli($this->host, $this->username, $this->password, $this->db_name);
-        if ($this->conn->connect_error) {
-            die("Erro de conexão: " . $this->conn->connect_error); //matar codigo caso o mysqli retorne erro d conexao 
-        }
-        $this->conn->set_charset($this->charset);
-        return $this->conn;
+    if ($this->conn->connect_error) {
+        throw new Exception("Erro de conexão: " . $this->conn->connect_error);
     }
+
+    $this->conn->set_charset($this->charset);
+    return $this->conn;
+}
+
 }
