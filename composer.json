@@ -4,7 +4,9 @@
         "psr-4": {
             "App\\": "app/",
             "App\\Routes\\": "routes/",
-            "App\\Config\\": "config/"
+            "App\\Config\\": "config/",
+            "App\\Models\\": "models/",
+            "App\\Controllers\\": "controllers/"
         }
     },
     "authors": [
@@ -13,5 +15,7 @@
             "email": "jhonatanpantaroto@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        
+    }
 }

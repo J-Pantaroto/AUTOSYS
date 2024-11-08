@@ -20,3 +20,4 @@
         </tr>
     <?php endforeach; ?>
 </table>
+<a href="/clientes/create">Novo Cliente</a>

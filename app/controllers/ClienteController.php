@@ -4,8 +4,9 @@ use App\Models\Cliente;
 
 class ClienteController
 {
-    public function create($data)
+    public function create()
     {
+        $data = $_POST;
         $cliente = new Cliente();
         $cliente->nome = $data['nome'];
         $cliente->email = $data['email'];
@@ -52,11 +53,10 @@ class ClienteController
     {
         $clienteModel = new Cliente();
         $clientes = $clienteModel->read();
+        return $clientes;
         
-        $title = 'Lista de Clientes';
-        require __DIR__ . '/../../views/Clientes.php';
 
-        include('/xampp/htdocs/AutoSys/layouts/main.layout.php');
+
     }
 
 }

@@ -60,7 +60,6 @@ class Cliente
         $query = "DELETE FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $this->id);
-
         return $stmt->execute();
     }
 }

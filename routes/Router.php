@@ -32,28 +32,29 @@ class Router
         return [
             "GET" => [
                 "/" => fn() => self::loadController("HomeController", "index"),
-                "home" => fn() => self::loadController("HomeController", "index"),
-                "" => fn() => self::loadController("HomeController", "index"),
-                "/clientes" => fn() => self::loadController("ClienteController", "index"),           // Lista clientes
-                "/clientes/create" => fn() => self::loadController("ClienteController", "create"),   // Formulário de criação de cliente
-                "/clientes/edit" => fn() => self::loadController("ClienteController", "edit"),       // Formulário de edição de cliente
-                "/produtos" => fn() => self::loadController("ProdutoController", "index"),           // Lista produtos
-                "/produtos/create" => fn() => self::loadController("ProdutoController", "create"),   // Formulário de criação de produto
-                "/produtos/edit" => fn() => self::loadController("ProdutoController", "edit"),       // Formulário de edição de produto
-                "/vendas" => fn() => self::loadController("VendaController", "index"),               // Lista vendas
-                "/vendas/create" => fn() => self::loadController("VendaController", "create"),       // Formulário de criação de venda
-                "/vendas/edit" => fn() => self::loadController("VendaController", "edit"),           // Formulário de edição de venda
+                "/home" => fn() => self::loadController("HomeController", "index"),
+                " " => fn() => self::loadController("HomeController", "index"),
+                "/clientes" => fn() => self::loadController("ClienteController", "index"),           
+                "/produtos" => fn() => self::loadController("ProdutoController", "index"),           
+                "/vendas" => fn() => self::loadController("VendaController", "index"),               
+                
             ],
             "POST" => [
-                "/clientes/store" => fn() => self::loadController("ClienteController", "store"),     // Salvar cliente
-                "/clientes/update" => fn() => self::loadController("ClienteController", "update"),   // Atualizar cliente
-                "/clientes/delete" => fn() => self::loadController("ClienteController", "delete"),   // Excluir cliente
-                "/produtos/store" => fn() => self::loadController("ProdutoController", "store"),     // Salvar produto
-                "/produtos/update" => fn() => self::loadController("ProdutoController", "update"),   // Atualizar produto
-                "/produtos/delete" => fn() => self::loadController("ProdutoController", "delete"),   // Excluir produto
-                "/vendas/store" => fn() => self::loadController("VendaController", "store"),         // Salvar venda
-                "/vendas/update" => fn() => self::loadController("VendaController", "update"),       // Atualizar venda
-                "/vendas/delete" => fn() => self::loadController("VendaController", "delete"),       // Excluir venda
+                "/vendas/edit" => fn() => self::loadController("VendaController", "edit"),        
+                "/produtos/edit" => fn() => self::loadController("ProdutoController", "edit"),       
+                "/clientes/edit" => fn() => self::loadController("ClienteController", "edit"),       
+                "/vendas/create" => fn() => self::loadController("VendaController", "create"),      
+                "/produtos/create" => fn() => self::loadController("ProdutoController", "create"),   
+                "/clientes/store" => fn() => self::loadController("ClienteController", "store"),     
+                "/clientes/update" => fn() => self::loadController("ClienteController", "update"),   
+                "/clientes/delete" => fn() => self::loadController("ClienteController", "delete"),
+                "/clientes/create" => fn() => self::loadController("ClienteController", "create"),
+                "/produtos/store" => fn() => self::loadController("ProdutoController", "store"),     
+                "/produtos/update" => fn() => self::loadController("ProdutoController", "update"),   
+                "/produtos/delete" => fn() => self::loadController("ProdutoController", "delete"),   
+                "/vendas/store" => fn() => self::loadController("VendaController", "store"),       
+                "/vendas/update" => fn() => self::loadController("VendaController", "update"),      
+                "/vendas/delete" => fn() => self::loadController("VendaController", "delete"),
             ],
         ];
     }
@@ -70,9 +71,9 @@ class Router
                 $uri = substr($uri, strlen($prefix));
             }
 
-            if (!isset($routes[$requestMethod]) || !array_key_exists($uri, $routes[$requestMethod])) {
+            if (!isset($requestMethod) || !array_key_exists($uri, $routes[$requestMethod])) {
 
-                echo ("teste3");
+                var_dump($routes[$requestMethod]);
                 throw new Exception("A rota não existe");
             }
 
