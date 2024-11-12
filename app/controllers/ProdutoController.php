@@ -49,4 +49,12 @@ class ProdutoController
         $produto->id = $id;
         return $produto->delete();
     }
+
+    public function index()
+    {
+        $produtoModel = new Produto();
+        $produtos = $produtoModel->read();
+        require __DIR__ . '/../../views/produtos.php';
+    }
+
 }

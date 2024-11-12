@@ -53,10 +53,7 @@ class ClienteController
     {
         $clienteModel = new Cliente();
         $clientes = $clienteModel->read();
-        return $clientes;
-        
-
-
+        require __DIR__ . '/../../views/clientes.php';
     }
 
 }

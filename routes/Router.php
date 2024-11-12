@@ -33,7 +33,7 @@ class Router
             "GET" => [
                 "/" => fn() => self::loadController("HomeController", "index"),
                 "/home" => fn() => self::loadController("HomeController", "index"),
-                " " => fn() => self::loadController("HomeController", "index"),
+                "" => fn() => self::loadController("HomeController", "index"),
                 "/clientes" => fn() => self::loadController("ClienteController", "index"),           
                 "/produtos" => fn() => self::loadController("ProdutoController", "index"),           
                 "/vendas" => fn() => self::loadController("VendaController", "index"),               
