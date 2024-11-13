@@ -22,6 +22,52 @@
 }
 
 /* HEADER */
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    min-width: 150px;
+    padding: 10px;
+}
+
+.dropdown-item {
+    padding: 8px 10px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.dropdown-item:hover {
+    background-color: #555;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-button p {
+    margin-bottom: 0;
+    color: white;
+}
+
+.bi-person-circle {
+    margin-left: 10px;
+}
+
 #drop {
     margin-top: 0;
     background-color: var(--color-header);
@@ -199,48 +245,37 @@ input.form-control:focus {
         gap: 1rem;
     }
 }
+/*FOOTER */
 
+#background {
+    padding-top: 5rem;
+    padding-bottom: 1.25rem;
+}
 
-.dropdown {
+.bg-text {
     position: relative;
-    display: inline-block;
+    color: black; 
+    background-image: url('/imgs/logo.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 1em 2em;
+    font-weight: bold;
+    font-size: 2.5rem;
 }
 
-.dropdown-menu {
-    display: none;
+
+.bg-text::before {
+    content: "";
     position: absolute;
-    top: 100%;
+    top: 0;
+    left: 0;
     right: 0;
-    background-color: #333;
-    color: white;
-    border-radius: 5px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    min-width: 150px;
-    padding: 10px;
-}
-
-.dropdown-item {
-    padding: 8px 10px;
-    text-decoration: none;
-    color: white;
-    display: block;
-}
-
-.dropdown-item:hover {
-    background-color: #555;
-}
-
-.user-button {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.user-button p {
-    margin-bottom: 0;
-    color: white;
-}
-
-.bi-person-circle {
-    margin-left: 10px;
+    bottom: 0;
+    background-image: url('/imgs/logo.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.2; 
+    z-index: -1;
 }

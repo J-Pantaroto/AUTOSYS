@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\Config\Database;
+use App\Config\DatabaseConnection;
 
 class Produto
 {
@@ -16,8 +16,7 @@ class Produto
 
     public function __construct()
     {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+        $this->conn = DatabaseConnection::getConnection();
     }
 
     public function create()

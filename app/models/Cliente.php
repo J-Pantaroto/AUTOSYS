@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-use App\Config\Database;
+use App\Config\DatabaseConnection;
 
 class Cliente
 {
@@ -16,8 +16,8 @@ class Cliente
 
     public function __construct()
     {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+        
+        $this->conn = DatabaseConnection::getConnection();
     }
 
     public function create()
@@ -34,16 +34,32 @@ class Cliente
     {
         $query = "SELECT * FROM " . $this->table;
         $result = $this->conn->query($query);
-        return $result;
+        $clientes = [];
+        if($result){
+            while ($row = $result->fetch_assoc()){
+                $clientes[] = $row;
+            }
+        }
+        return $clientes;
     }
-
-    public function readOne()
+    public function readOne($id)
     {
         $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $this->id);
+    
+        // Verifica se a preparação da consulta foi bem-sucedida
+        if ($stmt === false) {
+            die("Erro na preparação da consulta: " . $this->conn->error);
+        }
+    
+        // Associa o parâmetro `$id` ao tipo `i` (inteiro) na consulta preparada
+        $stmt->bind_param("i", $id);
+    
         $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
+        $result = $stmt->get_result();
+        
+        // Retorna um array associativo contendo os dados do cliente ou `null` se não encontrado
+        return $result->fetch_assoc();
     }
 
     public function update()

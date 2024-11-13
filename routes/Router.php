@@ -18,22 +18,23 @@ class Router
         $this->add("GET", "/clientes", "ClienteController", "index");
         $this->add("GET", "/produtos", "ProdutoController", "index");
         $this->add("GET", "/vendas", "VendaController", "index");
+        $this->add("GET", "/vendas/create", "VendaController", "showCreateForm");
+        $this->add("GET", "/produtos/create", "ProdutoController", "showCreateForm");
+        $this->add("GET", "/clientes/create", "ClienteController", "showCreateForm");
+        $this->add("GET", "/clientes/edit/{id}", "ClienteController", "edit");
+        $this->add("GET", "/produtos/edit/{id}", "ProdutoController", "edit");
+        $this->add("GET", "/vendas/edit{id}", "VendaController", "edit");
+
 
         // Definindo as rotas POST
-        $this->add("POST", "/vendas/edit", "VendaController", "edit");
-        $this->add("POST", "/produtos/edit", "ProdutoController", "edit");
-        $this->add("POST", "/clientes/edit", "ClienteController", "edit");
-        $this->add("POST", "/vendas/create", "VendaController", "create");
-        $this->add("POST", "/produtos/create", "ProdutoController", "create");
-        $this->add("POST", "/clientes/store", "ClienteController", "store");
-        $this->add("POST", "/clientes/update", "ClienteController", "update");
+        $this->add("POST", "/clientes/update/{id}", "ClienteController", "update");
         $this->add("POST", "/clientes/delete", "ClienteController", "delete");
-        $this->add("POST", "/clientes/create", "ClienteController", "create");
-        $this->add("POST", "/produtos/store", "ProdutoController", "store");
-        $this->add("POST", "/produtos/update", "ProdutoController", "update");
+        $this->add("POST", "/clientes/store", "ClienteController", "create");
+        $this->add("POST", "/produtos/store", "ProdutoController", "create");
+        $this->add("POST", "/produtos/update/{id}", "ProdutoController", "update");
         $this->add("POST", "/produtos/delete", "ProdutoController", "delete");
         $this->add("POST", "/vendas/store", "VendaController", "store");
-        $this->add("POST", "/vendas/update", "VendaController", "update");
+        $this->add("POST", "/vendas/update/{id}", "VendaController", "update");
         $this->add("POST", "/vendas/delete", "VendaController", "delete");
     }
     public function add($method, $path, $controller, $action)

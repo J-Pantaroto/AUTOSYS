@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Controllers;
+
 use App\Models\Cliente;
+use App\Core\View;
 
 class ClienteController
 {
@@ -14,7 +17,12 @@ class ClienteController
         $cliente->telefone = $data['telefone'];
         $cliente->endereco = $data['endereco'];
 
-        return $cliente->create();
+        if ($cliente->create()) {
+            header('Location: /clientes');
+            exit;
+        } else {
+            echo "Erro ao criar cliente.";
+        }
     }
 
     public function read()
@@ -27,11 +35,12 @@ class ClienteController
     {
         $cliente = new Cliente();
         $cliente->id = $id;
-        return $cliente->readOne();
+        return $cliente->readOne($id);
     }
 
-    public function update($id, $data)
+    public function update($id)
     {
+        $data = $_POST;
         $cliente = new Cliente();
         $cliente->id = $id;
         $cliente->nome = $data['nome'];
@@ -40,20 +49,58 @@ class ClienteController
         $cliente->telefone = $data['telefone'];
         $cliente->endereco = $data['endereco'];
 
-        return $cliente->update();
+        if ($cliente->update()) {
+            header('Location: /clientes');
+            exit;
+        } else {
+            echo "Erro ao atualizar cliente.";
+        }
+    }
+
+    public function edit($id)
+    {
+        $cliente = new Cliente();
+        $dadosCliente = $cliente->readOne($id);
+
+        if (!$dadosCliente) {
+            echo "Cliente não encontrado.";
+            return;
+        }
+
+        $data = [
+            'title' => 'Editar Cliente',
+            'cliente' => $dadosCliente
+        ];
+        View::render('clientes/edit', $data);
     }
 
     public function delete($id)
     {
         $cliente = new Cliente();
         $cliente->id = $id;
-        return $cliente->delete();
-    }
-      public function index()
-    {
-        $clienteModel = new Cliente();
-        $clientes = $clienteModel->read();
-        require __DIR__ . '/../../views/clientes.php';
+
+        if ($cliente->delete()) {
+            header('Location: /clientes');
+            exit;
+        } else {
+            echo "Erro ao deletar cliente.";
+        }
     }
 
+    public function index()
+    {
+        $clienteModel = new Cliente();
+        $clientesLista = $clienteModel->read();
+        $data = [
+            'title' => 'Clientes',
+            'clientes' => $clientesLista
+        ];
+        View::render('clientes/clientes', $data);
+    }
+
+    public function showCreateForm()
+    {
+        $data = ['title' => 'Novo Cliente'];
+        View::render('clientes/create', $data);
+    }
 }
