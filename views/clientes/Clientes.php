@@ -17,24 +17,15 @@
                     <th scope="col">Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php if (empty($clientes)) { ?>
-                    <td colspan="5"> Nenhum cliente cadastrado</td>
-                <?php } ?>
-                <?php foreach ($clientes as $cliente): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($cliente['id']) ?></td>
-                        <td><?= htmlspecialchars($cliente['nome']) ?></td>
-                        <td><?= htmlspecialchars($cliente['email']) ?></td>
-                        <td><?= htmlspecialchars($cliente['telefone']) ?></td>
-                        <td><?= htmlspecialchars($cliente['endereco']) ?></td>
-                        <td>
-                            <a href="/clientes/edit/<?= $cliente['id'] ?>" class="btn btn-sm btn-warning me-1">Editar</a>
-                            <a href="clientes/delete?id=<?= $cliente['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+            <tbody id="clientesTabela">
             </tbody>
         </table>
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/clientes.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        listarClientes(); 
+    });
+</script>

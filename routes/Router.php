@@ -17,25 +17,26 @@ class Router
         $this->add("GET", "/home", "HomeController", "index");
         $this->add("GET", "/clientes", "ClienteController", "index");
         $this->add("GET", "/produtos", "ProdutoController", "index");
+        $this->add("GET", "/produtos/json", "ProdutoController", "json");
         $this->add("GET", "/vendas", "VendaController", "index");
         $this->add("GET", "/vendas/create", "VendaController", "showCreateForm");
         $this->add("GET", "/produtos/create", "ProdutoController", "showCreateForm");
         $this->add("GET", "/clientes/create", "ClienteController", "showCreateForm");
-        $this->add("GET", "/clientes/edit/{id}", "ClienteController", "edit");
-        $this->add("GET", "/produtos/edit/{id}", "ProdutoController", "edit");
-        $this->add("GET", "/vendas/edit{id}", "VendaController", "edit");
+        $this->add("GET", "/clientes/edit/{id}", "ClienteController", "showEditForm");
+        $this->add("GET", "/produtos/edit/{id}", "ProdutoController", "showEditForm");
+        $this->add("GET", "/vendas/edit{id}", "VendaController", "showEditForm");
 
 
         // Definindo as rotas POST
         $this->add("POST", "/clientes/update/{id}", "ClienteController", "update");
-        $this->add("POST", "/clientes/delete", "ClienteController", "delete");
+        $this->add("POST", "/clientes/delete/{id}", "ClienteController", "delete");
         $this->add("POST", "/clientes/store", "ClienteController", "create");
         $this->add("POST", "/produtos/store", "ProdutoController", "create");
         $this->add("POST", "/produtos/update/{id}", "ProdutoController", "update");
-        $this->add("POST", "/produtos/delete", "ProdutoController", "delete");
+        $this->add("POST", "/produtos/delete/{id}", "ProdutoController", "delete");
         $this->add("POST", "/vendas/store", "VendaController", "store");
         $this->add("POST", "/vendas/update/{id}", "VendaController", "update");
-        $this->add("POST", "/vendas/delete", "VendaController", "delete");
+        $this->add("POST", "/vendas/delete/{id}", "VendaController", "delete");
     }
     public function add($method, $path, $controller, $action)
     {

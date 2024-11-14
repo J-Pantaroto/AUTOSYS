@@ -1,12 +1,25 @@
-<?php 
-namespace App\Controllers;
-use App\Models\Produto;
+<?php
 
+namespace App\Controllers;
+
+use App\Models\Produto;
+use App\Models\Categoria;
+use App\Core\View;
 
 class ProdutoController
 {
-    public function create($data)
+    // Função para criar um produto (POST)
+    public function create()
     {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // Validação básica dos dados
+        if (empty($data['nome']) || empty($data['descricao']) || empty($data['preco']) || empty($data['quantidade']) || empty($data['categoria'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
+            return;
+        }
+
         $produto = new Produto();
         $produto->nome = $data['nome'];
         $produto->descricao = $data['descricao'];
@@ -14,24 +27,51 @@ class ProdutoController
         $produto->quantidade = $data['quantidade'];
         $produto->categoria = $data['categoria'];
 
-        return $produto->create();
+        if ($produto->create()) {
+            http_response_code(201);
+            echo json_encode(["message" => "Produto criado com sucesso"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Erro ao criar o produto."]);
+        }
     }
 
+    // Função para listar todos os produtos (GET)
     public function read()
     {
         $produto = new Produto();
-        return $produto->read();
+        $produtos = $produto->read();
+
+        header('Content-Type: application/json');
+        echo json_encode($produtos);
     }
 
+    // Função para obter um único produto (GET)
     public function readOne($id)
     {
         $produto = new Produto();
-        $produto->id = $id;
-        return $produto->readOne();
+        $produtoData = $produto->readOne($id);
+
+        if ($produtoData) {
+            header('Content-Type: application/json');
+            echo json_encode($produtoData);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Produto não encontrado."]);
+        }
     }
 
-    public function update($id, $data)
+    // Função para atualizar um produto (POST)
+    public function update($id)
     {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($data['nome']) || empty($data['descricao']) || empty($data['preco']) || empty($data['quantidade']) || empty($data['categoria'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
+            return;
+        }
+
         $produto = new Produto();
         $produto->id = $id;
         $produto->nome = $data['nome'];
@@ -40,21 +80,81 @@ class ProdutoController
         $produto->quantidade = $data['quantidade'];
         $produto->categoria = $data['categoria'];
 
-        return $produto->update();
+        if ($produto->update()) {
+            echo json_encode(["message" => "Produto atualizado com sucesso"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Erro ao atualizar o produto."]);
+        }
     }
 
+    // Função para deletar um produto (POST)
     public function delete($id)
     {
         $produto = new Produto();
         $produto->id = $id;
-        return $produto->delete();
+
+        if ($produto->delete($id)) {
+            echo json_encode(["message" => "Produto excluído com sucesso"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Erro ao excluir o produto."]);
+        }
     }
 
     public function index()
     {
         $produtoModel = new Produto();
-        $produtos = $produtoModel->read();
-        require __DIR__ . '/../../views/produtos.php';
+        $produtosLista = $produtoModel->read();
+        $data = [
+            'title' => 'Produtos',
+            'produtos' => $produtosLista
+        ];
+        View::render('produtos/produtos', $data);
     }
 
+    public function json()
+    {
+        $produtoModel = new Produto();
+        $produtosLista = $produtoModel->read();
+
+        header('Content-Type: application/json');
+        echo json_encode($produtosLista);
+    }
+
+    public function showCreateForm()
+    {
+        $categoriaModel = new Categoria();
+        $categorias = $categoriaModel->getAll();
+
+        $data = [
+            'title' => 'Novo Produto',
+            'categorias' => $categorias
+        ];
+
+        View::render('produtos/create', $data);
+    }
+    public function showEditForm($id)
+    {
+        $produtoModel = new Produto();
+        $produtoData = $produtoModel->readOne($id);
+    
+        if (!$produtoData) {
+            http_response_code(404);
+            echo "Produto não encontrado.";
+            return;
+        }
+    
+        $categoriaModel = new Categoria();
+        $categorias = $categoriaModel->getAll();
+    
+        $data = [
+            'title' => 'Editar Produto',
+            'produto' => $produtoData,
+            'categorias' => $categorias
+        ];
+    
+        View::render('produtos/edit', $data);
+    }
+    
 }

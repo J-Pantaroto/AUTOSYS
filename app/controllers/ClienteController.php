@@ -79,7 +79,7 @@ class ClienteController
         $cliente = new Cliente();
         $cliente->id = $id;
 
-        if ($cliente->delete()) {
+        if ($cliente->delete($id)) {
             header('Location: /clientes');
             exit;
         } else {

@@ -33,14 +33,23 @@ class Produto
     {
         $query = "SELECT * FROM " . $this->table;
         $result = $this->conn->query($query);
-        return $result;
+        $produtos = [];
+        if($result){
+            while ($row = $result->fetch_assoc()){
+                $produtos[] = $row;
+            }
+        }
+        return $produtos;
     }
 
-    public function readOne()
+    public function readOne($id)
     {
         $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $this->id);
+        if ($stmt === false) {
+            die("Erro na preparação da consulta: " . $this->conn->error);
+        }
+        $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
@@ -54,11 +63,11 @@ class Produto
         return $stmt->execute();
     }
 
-    public function delete()
+    public function delete($id)
     {
         $query = "DELETE FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $this->id);
+        $stmt->bind_param("i", $id);
 
         return $stmt->execute();
     }

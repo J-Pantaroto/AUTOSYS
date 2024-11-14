@@ -47,18 +47,12 @@ class Cliente
         $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
     
-        // Verifica se a preparação da consulta foi bem-sucedida
         if ($stmt === false) {
             die("Erro na preparação da consulta: " . $this->conn->error);
         }
-    
-        // Associa o parâmetro `$id` ao tipo `i` (inteiro) na consulta preparada
         $stmt->bind_param("i", $id);
-    
         $stmt->execute();
-        $result = $stmt->get_result();
-        
-        // Retorna um array associativo contendo os dados do cliente ou `null` se não encontrado
+        $result = $stmt->get_result(); 
         return $result->fetch_assoc();
     }
 
@@ -71,11 +65,11 @@ class Cliente
         return $stmt->execute();
     }
 
-    public function delete()
+    public function delete($id)
     {
         $query = "DELETE FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("i", $this->id);
+        $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 }

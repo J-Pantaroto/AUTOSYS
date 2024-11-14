@@ -1,28 +1,32 @@
-<h1>PRODUTOS</h1>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Descricao</th>
-        <th>Preço</th>
-        <th>Quantidade</th>
-        <th>Categoria</th>
-        <th>Ações</th>
+<main class="container my-5" id="background">
+    <h1 class="text-center mb-4">Produtos</h1>
 
-    </tr>
-    <?php foreach ($produtos as $produto): ?>
-        <tr>
-            <td><?= $produto['id'] ?></td>
-            <td><?= $produto['nome'] ?></td>
-            <td><?= $produto['descricao'] ?></td>
-            <td><?= $produto['preco'] ?></td>
-            <td><?= $produto['quantidade'] ?></td>
-            <td><?= $produto['categoria'] ?></td>
-            <td>
-                <a href="produto_edit.php?id=<?= $produto['id'] ?>">Editar</a>
-                <a href="produto_delete.php?id=<?= $produto['id'] ?>">Excluir</a>
-            </td>
-        </tr>
-    <?php endforeach; ?>
-</table>
-<a href="/produtos/create">Novo Produto</a>
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" onclick="window.location.href='/produtos/create'">Novo Produto</button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Preço</th>
+                    <th scope="col">Quantidade</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="produtosTabela">
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script src="/js/produtos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    listarProdutos();
+});
+</script>
