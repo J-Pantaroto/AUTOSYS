@@ -32,27 +32,30 @@ O projeto utiliza um sistema de roteamento centralizado no arquivo `Router.php`,
 
 ### Estrutura Geral das Rotas
 
-| Método | Endpoint             | Controlador e Método              | Descrição                                                 |
-|--------|-----------------------|-----------------------------------|-----------------------------------------------------------|
-| `GET`  | `/` ou `/home`       | `HomeController::index`          | Página inicial do site                                    |
-| `GET`  | `/clientes`          | `ClienteController::index`       | Exibe lista de clientes                                   |
-| `GET`  | `/produtos`          | `ProdutoController::index`       | Exibe lista de produtos                                   |
-| `GET`  | `/vendas`            | `VendaController::index`         | Exibe lista de vendas                                     |
-| `POST` | `/clientes/create`   | `ClienteController::create`      | Exibe formulário para cadastrar cliente                   |
-| `POST` | `/clientes/store`    | `ClienteController::store`       | Salva um novo cliente                                     |
-| `POST` | `/clientes/edit`     | `ClienteController::edit`        | Exibe formulário de edição de um cliente                  |
-| `POST` | `/clientes/update`   | `ClienteController::update`      | Atualiza informações de um cliente                        |
-| `POST` | `/clientes/delete`   | `ClienteController::delete`      | Exclui um cliente                                         |
-| `POST` | `/produtos/create`   | `ProdutoController::create`      | Exibe formulário para cadastrar produto                   |
-| `POST` | `/produtos/store`    | `ProdutoController::store`       | Salva um novo produto                                     |
-| `POST` | `/produtos/edit`     | `ProdutoController::edit`        | Exibe formulário de edição de um produto                  |
-| `POST` | `/produtos/update`   | `ProdutoController::update`      | Atualiza informações de um produto                        |
-| `POST` | `/produtos/delete`   | `ProdutoController::delete`      | Exclui um produto                                         |
-| `POST` | `/vendas/create`     | `VendaController::create`        | Exibe formulário para cadastrar venda                     |
-| `POST` | `/vendas/store`      | `VendaController::store`         | Salva uma nova venda                                      |
-| `POST` | `/vendas/edit`       | `VendaController::edit`          | Exibe formulário de edição de uma venda                   |
-| `POST` | `/vendas/update`     | `VendaController::update`        | Atualiza informações de uma venda                         |
-| `POST` | `/vendas/delete`     | `VendaController::delete`        | Exclui uma venda                                          |
+| Método | Endpoint                    | Controlador e Método              | Descrição                                                 |
+|--------|------------------------------|-----------------------------------|-----------------------------------------------------------|
+| `GET`  | `/` ou `/home`              | `HomeController::index`           | Página inicial do site                                    |
+| `GET`  | `/clientes`                 | `ClienteController::index`        | Exibe lista de clientes                                   |
+| `GET`  | `/produtos`                 | `ProdutoController::index`        | Exibe lista de produtos                                   |
+| `GET`  | `/vendas`                   | `VendaController::index`          | Exibe lista de vendas                                     |
+| `GET`  | `/produtos/json`            | `ProdutoController::json`         | Exibe lista de produtos no formato JSON                   |
+| `GET`  | `/vendas/json`              | `VendaController::json`           | Exibe lista de vendas no formato JSON                     |
+| `GET`  | `/clientes/json`            | `ClienteController::json`         | Exibe lista de clientes no formato JSON                   |
+| `GET`  | `/vendas/create`            | `VendaController::showCreateForm` | Exibe formulário para cadastrar venda                     |
+| `GET`  | `/produtos/create`          | `ProdutoController::showCreateForm` | Exibe formulário para cadastrar produto                   |
+| `GET`  | `/clientes/create`          | `ClienteController::showCreateForm` | Exibe formulário para cadastrar cliente                   |
+| `GET`  | `/clientes/edit/{id}`       | `ClienteController::showEditForm` | Exibe formulário de edição de um cliente                  |
+| `GET`  | `/produtos/edit/{id}`       | `ProdutoController::showEditForm` | Exibe formulário de edição de um produto                  |
+| `GET`  | `/vendas/edit{id}`          | `VendaController::showEditForm`   | Exibe formulário de edição de uma venda                   |
+| `POST` | `/clientes/update/{id}`     | `ClienteController::update`       | Atualiza informações de um cliente                        |
+| `POST` | `/clientes/delete/{id}`     | `ClienteController::delete`       | Exclui um cliente                                         |
+| `POST` | `/clientes/store`           | `ClienteController::create`       | Salva um novo cliente                                     |
+| `POST` | `/produtos/store`           | `ProdutoController::create`       | Salva um novo produto                                     |
+| `POST` | `/produtos/update/{id}`     | `ProdutoController::update`       | Atualiza informações de um produto                        |
+| `POST` | `/produtos/delete/{id}`     | `ProdutoController::delete`       | Exclui um produto                                         |
+| `POST` | `/vendas/store`             | `VendaController::create`         | Salva uma nova venda                                      |
+| `POST` | `/vendas/update/{id}`       | `VendaController::update`         | Atualiza informações de uma venda                         |
+| `POST` | `/vendas/delete/{id}`       | `VendaController::delete`         | Exclui uma venda                                          |                                |
 
 ## API Endpoints - ProdutoController e ClienteController
 
