@@ -9,7 +9,15 @@ class ClienteController
 {
     public function create()
     {
-        $data = $_POST;
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // validar dados iniciais
+        if (empty($data['nome']) || empty($data['email']) || empty($data['senha']) || empty($data['telefone']) || empty($data['endereco'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
+            return;
+        }
+
         $cliente = new Cliente();
         $cliente->nome = $data['nome'];
         $cliente->email = $data['email'];
@@ -18,10 +26,11 @@ class ClienteController
         $cliente->endereco = $data['endereco'];
 
         if ($cliente->create()) {
-            header('Location: /clientes');
-            exit;
+            http_response_code(201);
+            echo json_encode(["message" => "Cliente criado com sucesso"]);
         } else {
-            echo "Erro ao criar cliente.";
+            http_response_code(500);
+            echo json_encode(["error" => "Erro ao criar o cliente."]);
         }
     }
 
@@ -40,6 +49,15 @@ class ClienteController
 
     public function update($id)
     {
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($data['nome']) || empty($data['email']) || empty($data['senha']) || empty($data['telefone']) || empty($data['endereco'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
+            return;
+        }
+
         $data = $_POST;
         $cliente = new Cliente();
         $cliente->id = $id;
@@ -50,30 +68,12 @@ class ClienteController
         $cliente->endereco = $data['endereco'];
 
         if ($cliente->update()) {
-            header('Location: /clientes');
-            exit;
+            echo json_encode(["message" => "Cliente atualizado com sucesso"]);
         } else {
-            echo "Erro ao atualizar cliente.";
+            http_response_code(500);
+            echo json_encode(["error" => "Erro ao atualizar o cliente."]);
         }
     }
-
-    public function edit($id)
-    {
-        $cliente = new Cliente();
-        $dadosCliente = $cliente->readOne($id);
-
-        if (!$dadosCliente) {
-            echo "Cliente não encontrado.";
-            return;
-        }
-
-        $data = [
-            'title' => 'Editar Cliente',
-            'cliente' => $dadosCliente
-        ];
-        View::render('clientes/edit', $data);
-    }
-
     public function delete($id)
     {
         $cliente = new Cliente();
@@ -98,9 +98,35 @@ class ClienteController
         View::render('clientes/clientes', $data);
     }
 
+    public function json()
+    {
+        $clienteModel = new Cliente();
+        $clientesLista = $clienteModel->read();
+
+        header('Content-Type: application/json');
+        echo json_encode($clientesLista);
+    }
     public function showCreateForm()
     {
         $data = ['title' => 'Novo Cliente'];
         View::render('clientes/create', $data);
+    }
+
+    public function showEditForm($id)
+    {
+        $clienteModel = new Cliente();
+        $clienteData = $clienteModel->readOne($id);
+
+        if (!$clienteData) {
+            http_response_code(404);
+            echo "Cliente não encontrado.";
+            return;
+        }
+        $data = [
+            'title' => 'Editar Cliente',
+            'cliente' => $clienteData
+        ];
+
+        View::render('clientes/edit', $data);
     }
 }

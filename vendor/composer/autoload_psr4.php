@@ -6,6 +6,8 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+    'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'App\\Routes\\' => array($baseDir . '/routes'),
     'App\\Models\\' => array($baseDir . '/models'),
     'App\\Controllers\\' => array($baseDir . '/controllers'),

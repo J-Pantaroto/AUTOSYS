@@ -18,6 +18,8 @@ class Router
         $this->add("GET", "/clientes", "ClienteController", "index");
         $this->add("GET", "/produtos", "ProdutoController", "index");
         $this->add("GET", "/produtos/json", "ProdutoController", "json");
+        $this->add("GET", "/vendas/json", "VendaController", "json");
+        $this->add("GET", "/clientes/json", "ClienteController", "json");
         $this->add("GET", "/vendas", "VendaController", "index");
         $this->add("GET", "/vendas/create", "VendaController", "showCreateForm");
         $this->add("GET", "/produtos/create", "ProdutoController", "showCreateForm");
@@ -34,7 +36,7 @@ class Router
         $this->add("POST", "/produtos/store", "ProdutoController", "create");
         $this->add("POST", "/produtos/update/{id}", "ProdutoController", "update");
         $this->add("POST", "/produtos/delete/{id}", "ProdutoController", "delete");
-        $this->add("POST", "/vendas/store", "VendaController", "store");
+        $this->add("POST", "/vendas/store", "VendaController", "create");
         $this->add("POST", "/vendas/update/{id}", "VendaController", "update");
         $this->add("POST", "/vendas/delete/{id}", "VendaController", "delete");
     }
@@ -74,6 +76,6 @@ class Router
     {
         http_response_code(404);
         $data = ['title' => 'Página não encontrada'];
-        View::render('home/index', $data);
+        View::render('404', $data);
     }
 }

@@ -16,6 +16,7 @@ async function criarProduto(data) {
                 title: 'Produto criado com sucesso!',
                 confirmButtonText: 'OK'
             }).then(() => {
+                window.location.href = '/produtos';
                 listarProdutos();
                 document.getElementById('createProdutoForm').reset();
             });

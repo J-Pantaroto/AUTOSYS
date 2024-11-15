@@ -264,6 +264,17 @@ input.form-control:focus {
     font-size: 2.5rem;
 }
 
+#error {
+    position: relative;
+    color: black; 
+    background-image: url('/imgs/404.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 1em 2em;
+    font-weight: bold;
+    font-size: 2.5rem;
+}
 
 .bg-text::before {
     content: "";

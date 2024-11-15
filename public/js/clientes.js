@@ -1,54 +1,53 @@
-document.addEventListener('DOMContentLoaded', () => {
-    listarClientes();
-});
-document.getElementById('createClienteForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    document.getElementById('nomeError').textContent = '';
-    document.getElementById('emailError').textContent = '';
-    document.getElementById('senhaError').textContent = '';
-    document.getElementById('senhaconfirmError').textContent = '';
-    document.getElementById('telefoneError').textContent = '';
-    document.getElementById('enderecoError').textContent = '';
-    
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const senha = document.getElementById('senha').value;
-    const senhaconfirm = document.getElementById('senhaconfirm').value;
-    const telefone = document.getElementById('telefone').value.trim();
-    const endereco = document.getElementById('endereco').value.trim();
+const form = document.getElementById('createClienteForm');
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.getElementById('nomeError').textContent = '';
+        document.getElementById('emailError').textContent = '';
+        document.getElementById('senhaError').textContent = '';
+        document.getElementById('senhaconfirmError').textContent = '';
+        document.getElementById('telefoneError').textContent = '';
+        document.getElementById('enderecoError').textContent = '';
 
-    let valid = true;
-    if (!nome) {
-        document.getElementById('nomeError').textContent = "Por favor, preencha o nome.";
-        valid = false;
-    }
-    if (!email) {
-        document.getElementById('emailError').textContent = "Por favor, preencha o email.";
-        valid = false;
-    }
-    if (!senha) {
-        document.getElementById('senhaError').textContent = "Por favor, preencha a senha.";
-        valid = false;
-    }
-    if (senha !== senhaconfirm) {
-        document.getElementById('senhaconfirmError').textContent = "As senhas não coincidem.";
-        valid = false;
-    }
-    if (telefone.length < 10) {
-        document.getElementById('telefoneError').textContent = "Por favor, insira um número de telefone válido.";
-        valid = false;
-    }
-    if (!endereco) {
-        document.getElementById('enderecoError').textContent = "Por favor, preencha o endereço.";
-        valid = false;
-    }
-    
-    if (!valid) return;
+        const nome = document.getElementById('nome').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const senha = document.getElementById('senha').value;
+        const senhaconfirm = document.getElementById('senhaconfirm').value;
+        const telefone = document.getElementById('telefone').value.trim();
+        const endereco = document.getElementById('endereco').value.trim();
 
-    const data = { nome, email, senha, telefone, endereco };
-    await criarCliente(data);
-});
+        let valid = true;
+        if (!nome) {
+            document.getElementById('nomeError').textContent = "Por favor, preencha o nome.";
+            valid = false;
+        }
+        if (!email) {
+            document.getElementById('emailError').textContent = "Por favor, preencha o email.";
+            valid = false;
+        }
+        if (!senha) {
+            document.getElementById('senhaError').textContent = "Por favor, preencha a senha.";
+            valid = false;
+        }
+        if (senha !== senhaconfirm) {
+            document.getElementById('senhaconfirmError').textContent = "As senhas não coincidem.";
+            valid = false;
+        }
+        if (telefone.length < 10) {
+            document.getElementById('telefoneError').textContent = "Por favor, insira um número de telefone válido.";
+            valid = false;
+        }
+        if (!endereco) {
+            document.getElementById('enderecoError').textContent = "Por favor, preencha o endereço.";
+            valid = false;
+        }
 
+        if (!valid) return;
+
+        const data = { nome, email, senha, telefone, endereco };
+        await criarCliente(data);
+    });
+}
 // Função CREATE (POST)
 async function criarCliente(data) {
     try {
@@ -87,24 +86,27 @@ async function criarCliente(data) {
 }
 
 // Função READ (GET)
+
 async function listarClientes() {
     try {
-        const response = await fetch('/clientes');
-        const clientes = await response.json();
+        const response = await fetch('/clientes/json');
+        if (response.headers.get('content-type').includes('application/json')) {
 
-        const tabelaClientes = document.getElementById('clientesTabela');
-        tabelaClientes.innerHTML = '';
+            const clientes = await response.json();
 
-        if (clientes.length === 0) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td colspan="6" class="text-center">Nenhum cliente cadastrado</td>
-            `;
-            tabelaClientes.appendChild(row);
-        } else {
-            clientes.forEach(cliente => {
+            const tabelaClientes = document.getElementById('clientesTabela');
+            tabelaClientes.innerHTML = '';
+
+            if (clientes.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                <td colspan="6" class="text-center">Nenhum cliente cadastrado</td>
+            `;
+                tabelaClientes.appendChild(row);
+            } else {
+                clientes.forEach(cliente => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                     <td>${cliente.id}</td>
                     <td>${cliente.nome}</td>
                     <td>${cliente.email}</td>
@@ -115,7 +117,15 @@ async function listarClientes() {
                         <button class="btn btn-sm btn-danger" onclick="deletarCliente(${cliente.id})">Excluir</button>
                     </td>
                 `;
-                tabelaClientes.appendChild(row);
+                    tabelaClientes.appendChild(row);
+                });
+            }
+        } else {
+            console.error("Erro: Resposta não é JSON.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Erro ao carregar a lista de clientes.'
             });
         }
     } catch (error) {
@@ -129,28 +139,13 @@ async function listarClientes() {
 }
 
 // Função EDITAR CLIENTE (GET)
-async function editarCliente(id) {
-    try {
-        const response = await fetch(`/clientes/edit/${id}`);
-        const cliente = await response.json();
-
-        document.getElementById('nome').value = cliente.nome;
-        document.getElementById('email').value = cliente.email;
-
-        document.getElementById('updateClienteForm').onsubmit = function(event) {
-            event.preventDefault();
-            atualizarCliente(id);
-        };
-    } catch (error) {
-        console.error("Erro ao carregar dados do cliente para edição:", error);
-    }
-}
-
-// Função UPDATE CLIENTE (POST)
 async function atualizarCliente(id) {
     const data = {
         nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value
+        email: document.getElementById('email').value,
+        senha: document.getElementById('senha').value,
+        telefone: document.getElementById('telefone').value,
+        endereco: document.getElementById('endereco').value
     };
 
     try {
@@ -167,11 +162,15 @@ async function atualizarCliente(id) {
                 icon: 'success',
                 title: 'Cliente atualizado com sucesso!',
                 confirmButtonText: 'OK'
-            }).then(() => listarClientes());
+            }).then(() => {
+                window.location.href = '/clientes';
+            });
         } else {
+            const error = await response.json();
             Swal.fire({
                 icon: 'error',
-                title: 'Erro ao atualizar cliente.'
+                title: 'Erro ao atualizar cliente',
+                text: error.error || 'Erro desconhecido'
             });
         }
     } catch (error) {
@@ -183,6 +182,22 @@ async function atualizarCliente(id) {
         console.error("Erro ao atualizar cliente:", error);
     }
 }
+
+function editarCliente(id) {
+    window.location.href = `/clientes/edit/${id}`;
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const updateForm = document.getElementById('updateclienteForm');
+    if (updateForm) {
+        const id = updateForm.querySelector('input[name="id"]').value;
+        updateForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            atualizarCliente(id);
+        });
+    }
+});
 
 // Função DELETAR CLIENTE (POST)
 async function deletarCliente(id) {

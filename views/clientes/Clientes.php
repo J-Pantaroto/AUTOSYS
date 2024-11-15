@@ -2,7 +2,7 @@
     <h1 class="text-center mb-4">Clientes</h1>
 
     <div class="d-flex justify-content-end mb-3">
-        <a href="/clientes/create" class="btn btn-primary">Novo Cliente</a>
+        <button class="btn btn-primary" onclick="window.location.href='/produtos/create'">Novo Cliente</button>
     </div>
 
     <div class="table-responsive">
