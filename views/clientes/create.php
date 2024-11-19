@@ -1,3 +1,26 @@
+<?php
+session_start();
+
+// Verificar se o usuário está logado
+if (!isset($_SESSION['user'])) {
+    header('Location: /login');
+    exit;
+}
+
+// Verificar se o usuário é administrador
+if (isset($adminOnly) && $adminOnly && !$_SESSION['user']['is_admin']) {
+    echo "<script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Acesso negado',
+            text: 'Área restrita a administradores.'
+        }).then(() => {
+            window.location.href = '/';
+        });
+    </script>";
+    exit;
+}
+?>
 <main class="container my-5" id="background">
     <h1 class="text-center mb-4">Novo Cliente</h1>
     <form id="createClienteForm">

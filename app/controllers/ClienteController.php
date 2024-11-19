@@ -9,19 +9,34 @@ class ClienteController
 {
     public function create()
     {
+        session_start();
+        // Verificar se o usuário está logado e se é administrador
+        if (!isset($_SESSION['user']) || !$_SESSION['user']['is_admin']) {
+            http_response_code(403);
+            echo json_encode(["error" => "Acesso negado."]);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
-        // validar dados iniciais
+        // Validações avançadas
         if (empty($data['nome']) || empty($data['email']) || empty($data['senha']) || empty($data['telefone']) || empty($data['endereco'])) {
             http_response_code(400);
             echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
             return;
         }
 
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            http_response_code(400);
+            echo json_encode(["error" => "O email fornecido é inválido."]);
+            return;
+        }
+
+        // Criar cliente
         $cliente = new Cliente();
         $cliente->nome = $data['nome'];
         $cliente->email = $data['email'];
-        $cliente->senha = $data['senha'];
+        $cliente->senha_hash = password_hash($data['senha'], PASSWORD_BCRYPT);
         $cliente->telefone = $data['telefone'];
         $cliente->endereco = $data['endereco'];
 
@@ -30,10 +45,9 @@ class ClienteController
             echo json_encode(["message" => "Cliente criado com sucesso"]);
         } else {
             http_response_code(500);
-            echo json_encode(["error" => "Erro ao criar o cliente."]);
+            echo json_encode(["error" => "Erro ao criar cliente."]);
         }
     }
-
     public function read()
     {
         $cliente = new Cliente();
@@ -63,7 +77,7 @@ class ClienteController
         $cliente->id = $id;
         $cliente->nome = $data['nome'];
         $cliente->email = $data['email'];
-        $cliente->senha = $data['senha'];
+        $cliente->senha_hash = $data['senha'];
         $cliente->telefone = $data['telefone'];
         $cliente->endereco = $data['endereco'];
 

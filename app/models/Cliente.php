@@ -9,10 +9,10 @@ class Cliente
     public $id;
     public $nome;
     public $email;
-    public $senha;
+    public $senha_hash;
     public $telefone;
     public $endereco;
-    public $data_cadastro;
+    public $is_admin;
 
     public function __construct()
     {
@@ -22,14 +22,18 @@ class Cliente
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (nome, email, senha, telefone, endereco, data_cadastro) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
-        $this->data_cadastro = date('Y-m-d H:i:s'); //pra prencher com a data/hora atual.
-        $stmt->bind_param("ssssss", $this->nome, $this->email, $this->senha, $this->telefone, $this->endereco, $this->data_cadastro);
-
+        $stmt = $this->conn->prepare("INSERT INTO {$this->table} (nome, email, senha_hash, telefone, endereco, is_admin) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $this->nome, $this->email, $this->senha_hash, $this->telefone, $this->endereco, $this->is_admin);
         return $stmt->execute();
     }
-
+    public function findByEmail($email)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE email = ? LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
     public function read()
     {
         $query = "SELECT * FROM " . $this->table;
@@ -60,7 +64,7 @@ class Cliente
     {
         $query = "UPDATE " . $this->table . " SET nome = ?, email = ?, senha = ?, telefone = ?, endereco = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("sssssi", $this->nome, $this->email, $this->senha, $this->telefone, $this->endereco, $this->id);
+        $stmt->bind_param("sssssi", $this->nome, $this->email, $this->senha_hash, $this->telefone, $this->endereco, $this->id);
 
         return $stmt->execute();
     }

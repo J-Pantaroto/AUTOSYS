@@ -27,9 +27,12 @@ class Router
         $this->add("GET", "/clientes/edit/{id}", "ClienteController", "showEditForm");
         $this->add("GET", "/produtos/edit/{id}", "ProdutoController", "showEditForm");
         $this->add("GET", "/vendas/edit{id}", "VendaController", "showEditForm");
-
+        $this->add("GET", "/login", "AuthController", "indexLogin");
+        $this->add("GET", "/register", "AuthController", "indexRegister");
 
         // Definindo as rotas POST
+        $this->add("POST", "/register", "AuthController", "register");
+        $this->add("POST", "/login", "AuthController", "login");
         $this->add("POST", "/clientes/update/{id}", "ClienteController", "update");
         $this->add("POST", "/clientes/delete/{id}", "ClienteController", "delete");
         $this->add("POST", "/clientes/store", "ClienteController", "create");

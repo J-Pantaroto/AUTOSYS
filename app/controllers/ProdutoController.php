@@ -11,15 +11,34 @@ class ProdutoController
     // Função para criar um produto (POST)
     public function create()
     {
+        session_start();
+        if (!isset($_SESSION['user']) || !$_SESSION['user']['is_admin']) {
+            http_response_code(403);
+            echo json_encode(["error" => "Acesso negado."]);
+            return;
+        }
+
         $data = json_decode(file_get_contents('php://input'), true);
 
-        // Validação básica dos dados
         if (empty($data['nome']) || empty($data['descricao']) || empty($data['preco']) || empty($data['quantidade']) || empty($data['categoria'])) {
             http_response_code(400);
             echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
             return;
         }
 
+        if (!is_numeric($data['preco']) || $data['preco'] <= 0) {
+            http_response_code(400);
+            echo json_encode(["error" => "O preço deve ser um número positivo."]);
+            return;
+        }
+
+        if (!is_int($data['quantidade']) && $data['quantidade'] < 0) {
+            http_response_code(400);
+            echo json_encode(["error" => "A quantidade deve ser um número inteiro positivo."]);
+            return;
+        }
+
+        // Criar produto
         $produto = new Produto();
         $produto->nome = $data['nome'];
         $produto->descricao = $data['descricao'];
@@ -29,10 +48,10 @@ class ProdutoController
 
         if ($produto->create()) {
             http_response_code(201);
-            echo json_encode(["message" => "Produto criado com sucesso"]);
+            echo json_encode(["message" => "Produto criado com sucesso."]);
         } else {
             http_response_code(500);
-            echo json_encode(["error" => "Erro ao criar o produto."]);
+            echo json_encode(["error" => "Erro ao criar produto."]);
         }
     }
 
