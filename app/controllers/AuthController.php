@@ -36,6 +36,7 @@ class AuthController
 
     public function login()
     {
+        session_start();
         $data = json_decode(file_get_contents('php://input'), true);
 
         // Validar dados
@@ -53,19 +54,27 @@ class AuthController
             echo json_encode(["error" => "Credenciais inválidas."]);
             return;
         }
-
+        $_SESSION['user'] = [
+            "id" => $clienteData['id'],
+            "nome" => $clienteData['nome'],
+            "email" => $clienteData['email'],
+            "is_admin" => $clienteData['is_admin']
+        ];
         echo json_encode([
             "message" => "Login realizado com sucesso.",
-            "user" => [
-                "id" => $clienteData['id'],
-                "nome" => $clienteData['nome'],
-                "email" => $clienteData['email'],
-                "is_admin" => $clienteData['is_admin']
-            ]
+            "user" => $_SESSION['user']
         ]);
     }
+    public function logout()
+{
+    session_start();
+    session_destroy();
+    echo json_encode(["message" => "Deslogado."]);
+}
+
     public function indexLogin(){
-        View::render('login');
+        $data[] = '';
+        View::render('login',$data);
     }
     public function indexRegister(){
         $data[] = '';

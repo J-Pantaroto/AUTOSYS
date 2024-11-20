@@ -10,7 +10,7 @@
     <link href="/css/main.css" rel="stylesheet">
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <title><?= $title ?? 'Teste'; ?></title>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 </head>

@@ -1,14 +1,12 @@
 <?php
 session_start();
 
-// Verificar se o usuário está logado
 if (!isset($_SESSION['user'])) {
     header('Location: /login');
     exit;
 }
 
-// Verificar se o usuário é administrador
-if (isset($adminOnly) && $adminOnly && !$_SESSION['user']['is_admin']) {
+if (!$_SESSION['user']['is_admin']){
     echo "<script>
         Swal.fire({
             icon: 'error',
@@ -45,7 +43,6 @@ if (isset($adminOnly) && $adminOnly && !$_SESSION['user']['is_admin']) {
         </table>
     </div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/js/clientes.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {

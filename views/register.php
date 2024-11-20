@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -45,6 +45,8 @@
             </form>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/register.js"></script>
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 

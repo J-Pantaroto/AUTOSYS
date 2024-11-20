@@ -25,7 +25,6 @@ try {
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     $mysqli->query($sqlClientes);
-    echo "Tabela 'clientes' verificada/criada.\n";
 
     $sqlProdutos = "
     CREATE TABLE IF NOT EXISTS produtos (
@@ -37,7 +36,6 @@ try {
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     $mysqli->query($sqlProdutos);
-    echo "Tabela 'produtos' verificada/criada.\n";
 
     $sqlVendas = "
     CREATE TABLE IF NOT EXISTS vendas (
@@ -48,8 +46,6 @@ try {
         FOREIGN KEY (cliente_id) REFERENCES clientes(id)
     )";
     $mysqli->query($sqlVendas);
-    echo "Tabela 'vendas' verificada/criada.\n";
-    echo "Setup concluído com sucesso.\n";
 } catch (Exception $e) {
     echo "Erro ao configurar o banco de dados: " . $e->getMessage() . "\n";
 }
