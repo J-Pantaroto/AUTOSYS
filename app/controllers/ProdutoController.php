@@ -11,7 +11,9 @@ class ProdutoController
     // Função para criar um produto (POST)
     public function create()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         if (!isset($_SESSION['user']) || !$_SESSION['user']['is_admin']) {
             http_response_code(403);
             echo json_encode(["error" => "Acesso negado."]);
@@ -20,40 +22,41 @@ class ProdutoController
 
         $data = json_decode(file_get_contents('php://input'), true);
 
-        if (empty($data['nome']) || empty($data['descricao']) || empty($data['preco']) || empty($data['quantidade']) || empty($data['categoria'])) {
+        if (!isset($data['nome']) || !isset($data['descricao']) || !isset($data['preco']) || !isset($data['quantidade']) || (!isset($data['categoria_id']) && !isset($data['nova_categoria_nome']))) {
             http_response_code(400);
             echo json_encode(["error" => "Por favor, preencha todos os campos obrigatórios."]);
             return;
         }
 
-        if (!is_numeric($data['preco']) || $data['preco'] <= 0) {
-            http_response_code(400);
-            echo json_encode(["error" => "O preço deve ser um número positivo."]);
-            return;
+        if (!empty($data['nova_categoria_nome'])) {
+            $categoriaModel = new Categoria();
+            $novaCategoriaId = $categoriaModel->create($data['nova_categoria_nome']);
+
+            if (!$novaCategoriaId) {
+                http_response_code(500);
+                echo json_encode(["error" => "Erro ao criar nova categoria."]);
+                return;
+            }
+
+            $data['categoria_id'] = $novaCategoriaId;
         }
 
-        if (!is_int($data['quantidade']) && $data['quantidade'] < 0) {
-            http_response_code(400);
-            echo json_encode(["error" => "A quantidade deve ser um número inteiro positivo."]);
-            return;
-        }
-
-        // Criar produto
         $produto = new Produto();
         $produto->nome = $data['nome'];
         $produto->descricao = $data['descricao'];
         $produto->preco = $data['preco'];
         $produto->quantidade = $data['quantidade'];
-        $produto->categoria = $data['categoria'];
+        $produto->categoria_id = $data['categoria_id'];
 
         if ($produto->create()) {
             http_response_code(201);
-            echo json_encode(["message" => "Produto criado com sucesso."]);
+            echo json_encode(["message" => "Produto criado com sucesso!"]);
         } else {
             http_response_code(500);
             echo json_encode(["error" => "Erro ao criar produto."]);
         }
     }
+
 
     // Função para listar todos os produtos (GET)
     public function read()
@@ -97,7 +100,7 @@ class ProdutoController
         $produto->descricao = $data['descricao'];
         $produto->preco = $data['preco'];
         $produto->quantidade = $data['quantidade'];
-        $produto->categoria = $data['categoria'];
+        $produto->categoria_id = $data['categoria'];
 
         if ($produto->update()) {
             echo json_encode(["message" => "Produto atualizado com sucesso"]);
@@ -157,23 +160,22 @@ class ProdutoController
     {
         $produtoModel = new Produto();
         $produtoData = $produtoModel->readOne($id);
-    
+
         if (!$produtoData) {
             http_response_code(404);
             echo "Produto não encontrado.";
             return;
         }
-    
+
         $categoriaModel = new Categoria();
         $categorias = $categoriaModel->getAll();
-    
+
         $data = [
             'title' => 'Editar Produto',
             'produto' => $produtoData,
             'categorias' => $categorias
         ];
-    
+
         View::render('produtos/edit', $data);
     }
-    
 }

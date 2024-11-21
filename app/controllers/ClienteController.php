@@ -9,7 +9,9 @@ class ClienteController
 {
     public function create()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         // Verificar se o usuário está logado e se é administrador
         if (!isset($_SESSION['user']) || !$_SESSION['user']['is_admin']) {
             http_response_code(403);

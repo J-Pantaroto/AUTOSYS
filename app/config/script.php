@@ -25,15 +25,22 @@ try {
         data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     $mysqli->query($sqlClientes);
-
+    $sqlCategorias = "
+    CREATE TABLE IF NOT EXISTS categorias (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        descricao VARCHAR(100) NOT NULL
+    )";
+    $mysqli->query($sqlCategorias);
     $sqlProdutos = "
     CREATE TABLE IF NOT EXISTS produtos (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        nome VARCHAR(100) NOT NULL,
+        nome VARCHAR(100),
         descricao TEXT,
-        preco DECIMAL(10,2) NOT NULL,
-        estoque INT NOT NULL,
-        data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        preco DECIMAL(10,2),
+        quantidade INT,
+        categoria_id INT,
+        data_adicionado DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (categoria_id) REFERENCES categorias(id)
     )";
     $mysqli->query($sqlProdutos);
 
@@ -41,11 +48,23 @@ try {
     CREATE TABLE IF NOT EXISTS vendas (
         id INT AUTO_INCREMENT PRIMARY KEY,
         cliente_id INT NOT NULL,
-        data_venda TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        total DECIMAL(10,2) NOT NULL,
+        data_venda DATETIME NOT NULL,
+        valor_total DECIMAL(10, 2) NOT NULL,
+        data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (cliente_id) REFERENCES clientes(id)
-    )";
+        )";
     $mysqli->query($sqlVendas);
+    $sqlItensVendas = "
+    CREATE TABLE IF NOT EXISTS itensvenda (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        venda_id INT NOT NULL,
+        produto_id INT NOT NULL,
+        quantidade INT NOT NULL,
+        subtotal DECIMAL(10, 2) NOT NULL,
+        FOREIGN KEY (venda_id) REFERENCES vendas(id),
+        FOREIGN KEY (produto_id) REFERENCES produtos(id)
+    )";
+    $mysqli->query($sqlItensVendas);
 } catch (Exception $e) {
     echo "Erro ao configurar o banco de dados: " . $e->getMessage() . "\n";
 }

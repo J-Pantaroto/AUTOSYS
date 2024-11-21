@@ -17,7 +17,7 @@ class Cliente
     public function __construct()
     {
         
-        $this->conn = DatabaseConnection::getConnection();
+        $this->conn = $conn ?? DatabaseConnection::getConnection();
     }
 
     public function create()
@@ -62,7 +62,7 @@ class Cliente
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET nome = ?, email = ?, senha = ?, telefone = ?, endereco = ? WHERE id = ?";
+        $query = "UPDATE " . $this->table . " SET nome = ?, email = ?, senha_hash = ?, telefone = ?, endereco = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("sssssi", $this->nome, $this->email, $this->senha_hash, $this->telefone, $this->endereco, $this->id);
 

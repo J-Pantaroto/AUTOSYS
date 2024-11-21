@@ -52,7 +52,7 @@ if (form) {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro',
-                text: 'Por favor, preencha todos os campos obrigatórios.'
+                text: 'Por favor, preencha todos os campos obrigatorios.'
             });
             return;
         }
@@ -77,7 +77,7 @@ if (form) {
 async function listarProdutos() {
     try {
         const response = await fetch('/produtos/json');
-        
+
         if (response.headers.get('content-type').includes('application/json')) {
             const produtos = await response.json();
             const tabelaProdutos = document.getElementById('produtosTabela');
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateForm = document.getElementById('updateProdutoForm');
     if (updateForm) {
         const id = updateForm.querySelector('input[name="id"]').value;
-        updateForm.addEventListener('submit', function(event) {
+        updateForm.addEventListener('submit', function (event) {
             event.preventDefault();
             atualizarProduto(id);
         });
@@ -209,4 +209,67 @@ async function deletarProduto(id) {
         });
         console.error("Erro ao excluir produto:", error);
     }
+}
+
+async function carregarCategorias() {
+    try {
+        const response = await fetch('/categorias');
+        if (response.ok) {
+            const categorias = await response.json();
+            const selectCategoria = document.getElementById('categoria');
+
+            categorias.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria.id;
+                option.textContent = categoria.descricao;
+                selectCategoria.appendChild(option);
+            });
+        } else {
+            console.error('Erro ao carregar categorias:', await response.text());
+        }
+    } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+    }
+}
+
+inputCategoria = document.getElementById('categoria');
+if (inputCategoria) {
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarCategorias();
+
+        inputCategoria.addEventListener('change', function () {
+            document.getElementById('novaCategoriaField').style.display = this.value === 'nova_categoria' ? 'block' : 'none';
+        });
+
+        formProd = document.getElementById('createProdutoForm');
+        if (formProd) {
+            formProd.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                const data = {
+                    nome: document.getElementById('nome').value,
+                    descricao: document.getElementById('descricao').value,
+                    preco: document.getElementById('preco').value,
+                    quantidade: document.getElementById('quantidade').value,
+                };
+                if (document.getElementById('categoria').value === 'nova_categoria') {
+                    data.nova_categoria_nome = document.getElementById('nova_categoria_nome').value;
+                    if (!data.nova_categoria_nome) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: 'Por favor, insira o nome da nova categoria.'
+                        });
+                        submitButton.disabled = false;
+                        return;
+                    }
+                } else {
+                    data.categoria_id = document.getElementById('categoria').value;
+                }
+                await criarProduto(data);
+                submitButton.disabled = false;
+            });
+        }
+    });
 }

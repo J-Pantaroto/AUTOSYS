@@ -1,91 +1,97 @@
-<?php 
+<?php
 namespace App\Controllers;
+use App\Core\View;
 use App\Models\Venda;
 use App\Models\ItensVenda;
-
+use App\Models\Produto;
 
 class VendaController
 {
-    public function create($data)
+    public function checkout()
     {
-        $venda = new Venda();
-        $venda->cliente_id = $data['cliente_id'];
-        $venda->data_venda = date('Y-m-d H:i:s');
-        $venda->total = $data['total'];
-        $venda->status = $data['status'];
-
-        if ($venda->create()) {
-            $venda_id = $venda->id; 
-
-            foreach ($data['itens'] as $itemData) {
-                $itemVenda = new ItensVenda();
-                $itemVenda->venda_id = $venda_id;
-                $itemVenda->produto_id = $itemData['produto_id'];
-                $itemVenda->quantidade = $itemData['quantidade'];
-                $itemVenda->preco_unitario = $itemData['preco_unitario'];
-                $itemVenda->subtotal = $itemData['quantidade'] * $itemData['preco_unitario'];
-
-                $itemVenda->create();
-            }
-            return true;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
-        return false;
-    }
 
-    public function read()
-    {
-        $venda = new Venda();
-        return $venda->read();
-    }
-
-    public function readOne($id)
-    {
-        $venda = new Venda();
-        $venda->id = $id;
-        $vendaData = $venda->readOne();
-
-        // Busca os itens de venda associados a essa venda
-        $itemVenda = new ItensVenda();
-        $vendaData['itens'] = $itemVenda->getItensByVendaId($id);
-
-        return $vendaData;
-    }
-
-    public function update($id, $data)
-    {
-        $venda = new Venda();
-        $venda->id = $id;
-        $venda->cliente_id = $data['cliente_id'];
-        $venda->data_venda = $data['data_venda'];
-        $venda->total = $data['total'];
-        $venda->status = $data['status'];
-
-        if ($venda->update()) {
-            $itemVenda = new ItensVenda();
-            $itemVenda->deleteByVendaId($id);
-
-            foreach ($data['itens'] as $itemData) {
-                $newItemVenda = new ItensVenda();
-                $newItemVenda->venda_id = $id;
-                $newItemVenda->produto_id = $itemData['produto_id'];
-                $newItemVenda->quantidade = $itemData['quantidade'];
-                $newItemVenda->preco_unitario = $itemData['preco_unitario'];
-                $newItemVenda->subtotal = $itemData['quantidade'] * $itemData['preco_unitario'];
-
-                $newItemVenda->create();
-            }
-            return true;
+        if (!isset($_SESSION['user'])) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Usuário não autenticado.']);
+            return;
         }
-        return false;
+
+        $userId = $_SESSION['user']['id'];
+        $cart = $_SESSION['cart'] ?? [];
+
+        if (empty($cart)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Carrinho vazio.']);
+            return;
+        }
+
+        $produtoModel = new Produto();
+        $vendaModel = new Venda();
+        $itensVendaModel = new ItensVenda();
+
+        $total = 0;
+        $itensVenda = [];
+
+        foreach ($cart as $productId => $quantity) {
+            $produto = $produtoModel->readOne($productId);
+            if (!$produto) {
+                http_response_code(400);
+                echo json_encode(['error' => "Produto ID {$productId} não encontrado."]);
+                return;
+            }
+
+            $subtotal = $produto['preco'] * $quantity;
+            $total += $subtotal;
+
+            $itensVenda[] = [
+                'produto_id' => $productId,
+                'quantidade' => $quantity,
+                'subtotal' => $subtotal,
+            ];
+        }
+
+        $vendaId = $vendaModel->create([
+            'cliente_id' => $userId,
+            'data_venda' => date('Y-m-d H:i:s'),
+            'valor_total' => $total,
+        ]);
+
+        if (!$vendaId) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Erro ao criar a venda.']);
+            return;
+        }
+
+        foreach ($itensVenda as $item) {
+            $item['venda_id'] = $vendaId;
+            $itensVendaModel->create($item);
+        }
+
+        unset($_SESSION['cart']);
+
+        echo json_encode(['success' => 'Compra realizada com sucesso!']);
     }
-
-    public function delete($id)
+    public function dashboard()
     {
-        $itemVenda = new ItensVenda();
-        $itemVenda->deleteByVendaId($id);
+        session_start();
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
+        }
 
-        $venda = new Venda();
-        $venda->id = $id;
-        return $venda->delete();
+        $user = $_SESSION['user'];
+        $vendaModel = new Venda();
+
+        $vendas = $vendaModel->getVendasByClienteId($user['id']);
+        $data = [
+            'title' => 'Dashboard',
+            'user' => $user,
+            'vendas' => $vendas
+        ];
+
+        View::render('/dashboard', $data);
     }
 }

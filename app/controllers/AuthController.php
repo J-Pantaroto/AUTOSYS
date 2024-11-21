@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Cliente;
 use App\Core\View;
+
 class AuthController
 {
     public function register()
@@ -66,18 +67,85 @@ class AuthController
         ]);
     }
     public function logout()
-{
-    session_start();
-    session_destroy();
-    echo json_encode(["message" => "Deslogado."]);
-}
-
-    public function indexLogin(){
-        $data[] = '';
-        View::render('login',$data);
+    {
+        session_start();
+        session_destroy();
+        echo "
+    <html>
+    <head>
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    </head>
+    <body>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Logout realizado com sucesso!',
+            showConfirmButton: false,
+            timer: 2000
+        }).then(() => {
+            window.location.href = '/';
+        });
+    </script>
+    </body>
+    </html>
+    ";
+        exit;
     }
-    public function indexRegister(){
+
+    public function indexLogin()
+    { {
+            session_start();
+
+            if (isset($_SESSION['user'])) {
+                echo "
+                <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Você já está logado!',
+                            text: 'Redirecionando para a página inicial...',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            willClose: () => {
+                                window.location.href = '/';
+                            }
+                        });
+                    });
+                </script>
+                ";
+                exit;
+            }
+
+            View::render('login');
+        }
+    }
+    public function indexRegister()
+    {
+        session_start();
+        if (isset($_SESSION['user'])) {
+            echo "
+            <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Você já está logado!',
+                        text: 'Redirecionando para a página inicial...',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        willClose: () => {
+                            window.location.href = '/';
+                        }
+                    });
+                });
+            </script>
+            ";
+            exit;
+        }
         $data[] = '';
-        View::render('register',$data);
+        View::render('register', $data);
     }
 }

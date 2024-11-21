@@ -11,7 +11,7 @@ class Produto
     public $descricao;
     public $preco;
     public $quantidade;
-    public $categoria;
+    public $categoria_id;
     public $data_adicionado;
 
     public function __construct()
@@ -21,17 +21,18 @@ class Produto
 
     public function create()
     {
-        $query = "INSERT INTO " . $this->table . " (nome, descricao, preco, quantidade, categoria, data_adicionado) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO " . $this->table . " (nome, descricao, preco, quantidade, categoria_id, data_adicionado) VALUES (?, ?, ?, ?, ?, ?)";
         $this->data_adicionado= date('Y-m-d H:i:s'); //pra prencher com a data/hora atual.
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssdiss", $this->nome, $this->descricao, $this->preco, $this->quantidade, $this->categoria, $this->data_adicionado);
+        $stmt->bind_param("ssdiss", $this->nome, $this->descricao, $this->preco, $this->quantidade, $this->categoria_id, $this->data_adicionado);
 
         return $stmt->execute();
     }
 
     public function read()
     {
-        $query = "SELECT * FROM " . $this->table;
+        $query = "SELECT p.*, c.descricao AS categoria FROM " . $this->table . " p 
+        LEFT JOIN categorias c ON p.categoria_id = c.id";
         $result = $this->conn->query($query);
         $produtos = [];
         if($result){
@@ -44,7 +45,9 @@ class Produto
 
     public function readOne($id)
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
+        $query = "SELECT p.*, c.descricao AS categoria FROM " . $this->table . " p 
+                  LEFT JOIN categorias c ON p.categoria_id = c.id 
+                  WHERE p.id = ?";
         $stmt = $this->conn->prepare($query);
         if ($stmt === false) {
             die("Erro na preparação da consulta: " . $this->conn->error);
@@ -56,9 +59,10 @@ class Produto
 
     public function update()
     {
-        $query = "UPDATE " . $this->table . " SET nome = ?, descricao = ?, preco = ?, quantidade = ?, categoria = ? WHERE id = ?";
+        $query = "UPDATE " . $this->table . " SET nome = ?, descricao = ?, preco = ?, quantidade = ?, categoria_id = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("ssdiss", $this->nome, $this->descricao, $this->preco, $this->quantidade, $this->categoria, $this->id);
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ssdiss", $this->nome, $this->descricao, $this->preco, $this->quantidade, $this->categoria_id, $this->id);
 
         return $stmt->execute();
     }

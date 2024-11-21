@@ -290,3 +290,38 @@ input.form-control:focus {
     opacity: 0.2; 
     z-index: -1;
 }
+
+#floating-cart{
+    z-index: 1;
+}
+#view-cart {
+    background-color: black;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cart-button svg {
+    width: 28px;
+    height: 28px;
+}
+
+#view-cart:hover {
+    background-color: white;
+    color: black;
+}
+
+.cart-button:hover svg {
+    fill: black;
+}
+
+#cart-count {
+    font-size: 0.75rem;
+    transform: translate(50%, -50%);
+}

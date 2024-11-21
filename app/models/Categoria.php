@@ -7,7 +7,6 @@ class Categoria
 {
     private $conn;
     private $table = 'categorias';
-    public $nome;
 
     public function __construct()
     {
@@ -19,21 +18,21 @@ class Categoria
         $query = "SELECT * FROM " . $this->table;
         $result = $this->conn->query($query);
         $categorias = [];
-        
+
         if ($result) {
             while ($row = $result->fetch_assoc()) {
                 $categorias[] = $row;
             }
         }
-        
+
         return $categorias;
     }
 
-    public function create($nome)
+    public function create($descricao)
     {
-        $query = "INSERT INTO " . $this->table . " (nome) VALUES (?)";
+        $query = "INSERT INTO " . $this->table . " (descricao) VALUES (?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("s", $nome);
+        $stmt->bind_param("s", $descricao);
         $stmt->execute();
 
         return $stmt->insert_id;

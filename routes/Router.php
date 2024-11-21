@@ -29,8 +29,18 @@ class Router
         $this->add("GET", "/vendas/edit{id}", "VendaController", "showEditForm");
         $this->add("GET", "/login", "AuthController", "indexLogin");
         $this->add("GET", "/register", "AuthController", "indexRegister");
-
+        $this->add("GET", "/categorias", "CategoriaController", "index");
+        $this->add("GET", "/cart", "CartController", "getCart");
+        $this->add("GET", "/dashboard", "VendaController", "dashboard");
+        
         // Definindo as rotas POST
+
+        $this->add("POST", "/checkout", "VendaController", "checkout");
+        $this->add("POST", "/logout", "AuthController", "logout");
+        $this->add("POST", "/cart/add", "CartController", "addToCart");
+        $this->add("POST", "/cart/remove", "CartController", "removeFromCart");
+        $this->add("POST", "/cart/clear", "CartController", "clearCart");
+        $this->add("POST", "/cart/checkout", "VendaController", "checkout");
         $this->add("POST", "/register", "AuthController", "register");
         $this->add("POST", "/login", "AuthController", "login");
         $this->add("POST", "/clientes/update/{id}", "ClienteController", "update");

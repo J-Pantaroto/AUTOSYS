@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user'])) {
     header('Location: /login');
@@ -23,7 +25,7 @@ if (!$_SESSION['user']['is_admin']){
     <h1 class="text-center mb-4">Clientes</h1>
 
     <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary" onclick="window.location.href='/produtos/create'">Novo Cliente</button>
+        <button class="btn btn-primary" onclick="window.location.href='/clientes/create'">Novo Cliente</button>
     </div>
 
     <div class="table-responsive">
